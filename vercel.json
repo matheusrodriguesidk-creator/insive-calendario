@@ -6,11 +6,19 @@
       "use": "@vercel/static"
     },
     {
-      "src": "api/ical.js",
+      "src": "api/*.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
+    {
+      "src": "/api/gist-patch",
+      "dest": "/api/gist-patch.js"
+    },
+    {
+      "src": "/api/gist",
+      "dest": "/api/gist.js"
+    },
     {
       "src": "/api/ical",
       "dest": "/api/ical.js"
