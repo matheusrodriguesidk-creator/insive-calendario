@@ -2,7 +2,6 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-  <meta name="gist-token" content="%%GIST_TOKEN%%">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Insive · Calendário Editorial</title>
 <style>
@@ -467,8 +466,8 @@
 </div>
 
 <script>
-const GIST_ID = '41713001ba437e11033bd18cb02d68bd';
-const TOKEN   = '';
+const GIST_ID = '41713001ba437e11033bd18cb02d68bd'; // 107 posts jun-dez 2026
+// token gerenciado pelo proxy
 
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const LAYOUTS = { A:'Navy clássico', B:'Fundo claro', C:'Fundo gold', D:'Foto full-bleed' };
@@ -482,10 +481,7 @@ let postSelecionado = null;
 
 async function carregarDados() {
   try {
-    const r = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-      const GIST_TOKEN = document.querySelector('meta[name=gist-token]')?.content || '';
-    headers: { 'Authorization': `token ${GIST_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
-    });
+    const r = await fetch('/api/gist');
     const data = await r.json();
     posts = JSON.parse(data.files['insive_posts.json'].content);
     if (data.files['insive_sistema.json']) {
@@ -498,19 +494,10 @@ async function carregarDados() {
 }
 
 async function salvarGist() {
-  await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-    method: 'PATCH',
-    headers: {
-      'Authorization': `token ${TOKEN}`,
-      'Content-Type': 'application/json',
-      'Accept': 'application/vnd.github.v3+json'
-    },
-    body: JSON.stringify({
-      files: {
-        'insive_posts.json': { content: JSON.stringify(posts, null, 2) },
-        'insive_sistema.json': { content: JSON.stringify(sistema, null, 2) }
-      }
-    })
+  await fetch('/api/gist-patch', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ files: { 'insive_posts.json': { content: JSON.stringify(posts,null,2) } } })
   });
 }
 
